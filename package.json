@@ -1,7 +1,7 @@
 {
   "name": "react_ros2",
   "version": "0.1.0",
-  "homepage": "https://soft9011111.github.io/inventry",
+  "homepage": "https://github.com/soft9011111/inventry",
   "private": true,
   "dependencies": {
     "@supabase/supabase-js": "^2.26.0",
