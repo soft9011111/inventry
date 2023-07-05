@@ -4,6 +4,7 @@ import Header from "./components/Header";
 import Home from "./components/Home";
 import ListJobs from "./components/jobs/ListJobs";
 import AddJob from "./components/jobs/AddJob";
+import ViewJob from "./components/jobs/ViewJob";
 
 function App() {
   return (
@@ -15,6 +16,7 @@ function App() {
             <Route index element={<Home />} />
             <Route path="listjobs" element={<ListJobs />} />
             <Route path="addjob" element={<AddJob />} />
+            <Route path="viewjob" element={<ViewJob />} />
           </Route>
         </Routes>
       </BrowserRouter>
