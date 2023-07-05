@@ -3,8 +3,7 @@ import { Container } from "react-bootstrap";
 import Button from 'react-bootstrap/Button';
 import Table from 'react-bootstrap/Table';      
 import { createClient } from "@supabase/supabase-js";
-import view from '../../asset/view1.png'
-import { useNavigate } from "react-router-dom";
+import { createSearchParams, useNavigate } from "react-router-dom";
 
 const supabase = createClient("https://jnklmllknvssnmqrtnue.supabase.co", "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Impua2xtbGxrbnZzc25tcXJ0bnVlIiwicm9sZSI6ImFub24iLCJpYXQiOjE2ODgyNzg3ODIsImV4cCI6MjAwMzg1NDc4Mn0.PJ6LXiLWtKVloHSjcSbe1gVnT9hTCR2OlaqsZXvIXh0");
 
@@ -21,9 +20,16 @@ function ListJobs() {
     setJobs(data);
   }
   
-  function viewjob () {
-    navigate('/viewjob');
-}
+const viewjob = (job) => {
+  navigate({
+    pathname: "/viewjob",
+    search: createSearchParams({
+        job_id: job.id
+    }).toString()
+});
+
+
+ }
   return (
     <div className="listjobs">
       <Container>
@@ -39,13 +45,13 @@ function ListJobs() {
           </thead>
           <tbody>
             {Jobs.map((job) => (
-              <tr>
+              <tr key={job.id} onClick={()=>{viewjob(job)}}>
                 <td>{job.client_name}
                 </td>
                 <td>{job.vehicle_no}
                 </td>
-                <td><img style={{ width: 40, height: 40 }} src={view}  alt="Logo" onClick={viewjob}/>
-                </td>
+                {/* <td><img style={{ width: 40, height: 40 }} src={view}  alt="Logo" onClick={Trigger(job)} />
+                </td> */}
               </tr>
             ))}
           </tbody>
