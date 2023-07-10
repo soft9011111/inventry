@@ -5,6 +5,7 @@ import Home from "./components/Home";
 import ListJobs from "./components/jobs/ListJobs";
 import AddJob from "./components/jobs/AddJob";
 import ViewJob from "./components/jobs/ViewJob";
+import AddJobIntent from "./components/jobs/AddJobIntent";
 
 function App() {
   return (
@@ -17,6 +18,7 @@ function App() {
             <Route path="listjobs" element={<ListJobs />} />
             <Route path="addjob" element={<AddJob />} />
             <Route path="viewjob" element={<ViewJob />} />
+            <Route path="addjobintent" element={<AddJobIntent />} />
           </Route>
         </Routes>
       </BrowserRouter>
