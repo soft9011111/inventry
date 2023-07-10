@@ -1,11 +1,12 @@
 import React, { useEffect, useState } from "react";
 import { Container } from "react-bootstrap";
 import Button from 'react-bootstrap/Button';
-import Table from 'react-bootstrap/Table';      
+import Table from 'react-bootstrap/Table';
 import { createClient } from "@supabase/supabase-js";
 import { createSearchParams, useNavigate } from "react-router-dom";
+import Config from "../../scripts/config";
 
-const supabase = createClient("https://jnklmllknvssnmqrtnue.supabase.co", "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Impua2xtbGxrbnZzc25tcXJ0bnVlIiwicm9sZSI6ImFub24iLCJpYXQiOjE2ODgyNzg3ODIsImV4cCI6MjAwMzg1NDc4Mn0.PJ6LXiLWtKVloHSjcSbe1gVnT9hTCR2OlaqsZXvIXh0");
+const supabase = createClient(Config.SUPABASE_URL, Config.SUPABASE_KEY);
 
 function ListJobs() {
   const navigate = useNavigate();
@@ -19,21 +20,19 @@ function ListJobs() {
     const { data } = await supabase.from("jobs").select();
     setJobs(data);
   }
-  
-const viewjob = (job) => {
-  navigate({
-    pathname: "/viewjob",
-    search: createSearchParams({
+
+  const viewjob = (job) => {
+    navigate({
+      pathname: "/viewjob",
+      search: createSearchParams({
         job_id: job.id
-    }).toString()
-});
-
-
- }
+      }).toString()
+    });
+  }
   return (
     <div className="listjobs">
       <Container>
-        <div className="addjobbtn"><Button style={{background:'gray', borderRadius:50}} variant="primary" href="/addjob" >Add Job</Button> 
+        <div className="addjobbtn"><Button style={{ background: 'gray', borderRadius: 50 }} variant="primary" href="/addjob" >Add Job</Button>
         </div>
         <Table striped bordered hover>
           <thead>
@@ -45,7 +44,7 @@ const viewjob = (job) => {
           </thead>
           <tbody>
             {Jobs.map((job) => (
-              <tr key={job.id} onClick={()=>{viewjob(job)}}>
+              <tr key={job.id} onClick={() => { viewjob(job) }}>
                 <td>{job.client_name}
                 </td>
                 <td>{job.vehicle_no}

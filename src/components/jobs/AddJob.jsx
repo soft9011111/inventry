@@ -4,10 +4,9 @@ import Button from 'react-bootstrap/Button';
 import { useState } from "react";
 import { createClient } from "@supabase/supabase-js";
 import { useNavigate } from "react-router-dom";
-import Toast from 'react-bootstrap/Toast';
+import Config from "../../scripts/config";
 
-
-const supabase = createClient("https://jnklmllknvssnmqrtnue.supabase.co", "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Impua2xtbGxrbnZzc25tcXJ0bnVlIiwicm9sZSI6ImFub24iLCJpYXQiOjE2ODgyNzg3ODIsImV4cCI6MjAwMzg1NDc4Mn0.PJ6LXiLWtKVloHSjcSbe1gVnT9hTCR2OlaqsZXvIXh0");
+const supabase = createClient(Config.SUPABASE_URL, Config.SUPABASE_KEY);
 
 
 export default function AddJob() {
@@ -27,7 +26,6 @@ export default function AddJob() {
             job_type: jobInfo.job_type,  completion_date: jobInfo.target_date, status: 'In Progress'  });
         console.log(error);
         console.log(data);
-
         navigate('/listjobs');
     };
 
