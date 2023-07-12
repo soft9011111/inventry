@@ -12,9 +12,8 @@ const supabase = createClient(Config.SUPABASE_URL, Config.SUPABASE_KEY);
 function ViewJob() {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
-  console.log(searchParams.get("job_id"))
   const [JobDetails, setJobDetails] = useState([]);
-
+  
   useEffect(() => {
     getJobDetails();
   }, []);

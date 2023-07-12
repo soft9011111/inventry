@@ -14,7 +14,7 @@ export default function AddJobIntent() {
     const [searchParams] = useSearchParams();
 
     const [jobIntent, setJobIntent] = useState({
-        job_id: "", intent_value: "", material_ref_id: "", category_id: "-1", sub_category_id: "-1",
+        job_id: "", intent_value: "0", material_ref_id: "", category_id: "-1", sub_category_id: "-1",
         sec_sub_category_id: "-1",
     });
 
@@ -46,20 +46,20 @@ export default function AddJobIntent() {
 
     // update category 
     const changeHandler = (e) => {
-        setJobIntent({ ...jobIntent, [e.target.name]: e.target.value });
-        if (e.target.value !== -1) {
-            getSubCategories(e.target.value);
-        } else {
-            setJobIntent({ ...jobIntent, category_id: "-1" });
-            getSecSubCategories(-1);
-        }
-
+        getSubCategories(e.target.value);
     };
     async function getSubCategories(cate_id) {
         const { data, error } = await supabase.from("sub_category")
             .select()
             .eq('cate_id', cate_id);
+        
+        if (data.length == 0 && cate_id != "-1") {
+            setJobIntent({ ...jobIntent, category_id: cate_id, sub_category_id: "0", sec_sub_category_id: "0" });
+        } else {
+            setJobIntent({ ...jobIntent, category_id: cate_id, sub_category_id: "-1", sec_sub_category_id: "-1" });
+        }
         setSubCategories(data);
+
     }
 
     // update subcategory 
@@ -85,20 +85,34 @@ export default function AddJobIntent() {
 
     async function handleSubmit(e) {
         e.preventDefault();
+        console.log(jobIntent.category_id)
         if (jobIntent.category_id != "-1" && jobIntent.sub_category_id != "-1"
             && jobIntent.sec_sub_category_id != "-1") {
-            jobIntent.material_ref_id = jobIntent.category_id + "_" +jobIntent.sub_category_id + "_"+jobIntent.sec_sub_category_id;
+            if(jobIntent.sub_category_id == 0 ){
+                jobIntent.sub_category_id = null;
+            }
+            if(jobIntent.sec_sub_category_id == 0 ){
+                jobIntent.sec_sub_category_id = null;
+            }
+            
             const { data, error } = await supabase.from("job_intent").insert(
                 {
                     job_id: jobIntent.job_id,
                     intent_value: jobIntent.intent_value,
-                    //material_ref_id: jobIntent.material_ref_id
+                    cate_id: jobIntent.category_id,
+                    sub_cate_id: jobIntent.sub_category_id,
+                    sec_sub_cate_id: jobIntent.sec_sub_category_id,
                 });
-            console.log(error);
-            console.log(data);
-            navigate('/listjobs');
+            navigate({
+                pathname: "/viewjob",
+                search: createSearchParams({
+                  job_id: jobIntent.job_id
+                }).toString()
+              });
         }
-
+    };
+    const valueHandler = (e) => {
+        setJobIntent({ ...jobIntent, [e.target.name]: e.target.value });
     };
 
     return (
@@ -141,6 +155,10 @@ export default function AddJobIntent() {
                             <option value={secSubCategory.id}>{secSubCategory.name}</option>
                         ))}
                     </select>
+                    </Row><br />
+                    <Row>Value</Row>
+                    <Row><input type="text" style={{ height: 40 }} name="intent_value" placeholder=""
+                        value={jobIntent.intent_value} onChange={valueHandler}></input>
                     </Row><br />
                     <Row><Button className="submit" style={{ background: 'gray', borderRadius: 50, }} type="submit">SUBMIT</Button></Row>
                 </form>

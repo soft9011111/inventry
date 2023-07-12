@@ -49,8 +49,6 @@ function ListJobs() {
                 </td>
                 <td>{job.vehicle_no}
                 </td>
-                {/* <td><img style={{ width: 40, height: 40 }} src={view}  alt="Logo" onClick={Trigger(job)} />
-                </td> */}
               </tr>
             ))}
           </tbody>

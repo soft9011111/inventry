@@ -6,6 +6,7 @@ import ListJobs from "./components/jobs/ListJobs";
 import AddJob from "./components/jobs/AddJob";
 import ViewJob from "./components/jobs/ViewJob";
 import AddJobIntent from "./components/jobs/AddJobIntent";
+import ListInventry from "./components/materials/ListInventry";
 
 function App() {
   return (
@@ -19,6 +20,7 @@ function App() {
             <Route path="addjob" element={<AddJob />} />
             <Route path="viewjob" element={<ViewJob />} />
             <Route path="addjobintent" element={<AddJobIntent />} />
+            <Route path="listinventry" element={<ListInventry />} />
           </Route>
         </Routes>
       </BrowserRouter>
