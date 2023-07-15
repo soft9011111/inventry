@@ -9,7 +9,7 @@ class Header extends Component {
             <Container>
                 <Navbar bg="dark" variant="dark" expand="lg" collapseOnSelect>
                     <Container>
-                        <Navbar.Brand href="#home">Inventry App</Navbar.Brand>
+                        <Navbar.Brand href="#home">P M FAABS</Navbar.Brand>
                         <Navbar.Toggle aria-controls="basic-navbar-nav" />
                         <Navbar.Collapse id="basic-navbar-nav">
                             <Nav className="me-auto">
