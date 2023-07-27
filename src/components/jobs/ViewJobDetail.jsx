@@ -1,15 +1,15 @@
 import React, { useEffect, useState } from "react";
 import { Container } from "react-bootstrap";
-import Button from 'react-bootstrap/Button';
+//import Button from 'react-bootstrap/Button';
 import Table from 'react-bootstrap/Table';
 import { createClient } from "@supabase/supabase-js";
-import { useNavigate, useSearchParams, createSearchParams } from "react-router-dom";
+import { useNavigate,  createSearchParams } from "react-router-dom";
 import Config from "../../scripts/config";
 
 const supabase = createClient(Config.SUPABASE_URL, Config.SUPABASE_KEY);
 
 function ViewJobDetails(Probs) {
-  const navigate = useNavigate();
+  //const navigate = useNavigate();
   const [JobDetails, setJobDetails] = useState([]);
   
   useEffect(() => {

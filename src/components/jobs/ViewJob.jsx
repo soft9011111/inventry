@@ -8,6 +8,7 @@ import ViewMaterial from "./ViewJobIntent";
 import Config from "../../scripts/config";
 import ViewJobDetails from "./ViewJobDetail";
 import ViewJobIntent from "./ViewJobIntent";
+import Header from "../Header";
 
 const supabase = createClient(Config.SUPABASE_URL, Config.SUPABASE_KEY);
 
@@ -15,8 +16,11 @@ function ViewJob() {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const [JobDetails, setJobDetails] = useState([]);
+  const [UserRole, setUserRole] = useState("");
+  const [UserName, setUserName] = useState("");
   
   useEffect(() => {
+    getSession();
     getJobDetails();
   }, []);
 
@@ -25,6 +29,17 @@ function ViewJob() {
       .select()
       .eq('id', searchParams.get("job_id"));
     setJobDetails(data);
+  }
+  async function getSession(){
+    const isLoggedIn = sessionStorage.getItem('isLoggedIn');
+    const userrole = sessionStorage.getItem('userrole');
+    const username = sessionStorage.getItem('username');
+     if( isLoggedIn != null){
+        setUserRole(userrole);
+        setUserName(username);
+     }else{
+        navigate("/");
+     }
   }
 
   function addjobintent(){
@@ -38,6 +53,7 @@ function ViewJob() {
 
   return (
     <div className="listjobs">
+      <Header menu={true} username={UserName} />
       <Container>
       <div className="addjobbtn"><Button style={{background:'gray', borderRadius:50}} variant="primary" onClick={()=>{addjobintent()}} >Add Intent</Button> 
         </div>

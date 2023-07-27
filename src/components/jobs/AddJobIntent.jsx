@@ -36,6 +36,43 @@ export default function AddJobIntent() {
         setCategories(data);
     }
 
+    async function selectInventry() {
+        if(jobIntent.sec_sub_category_id != null && jobIntent.sub_category_id != null){
+            const { data } = await supabase.from("inventry").select()
+            .eq('cate_id',  jobIntent.category_id)
+            .eq('sub_cate_id',  jobIntent.sub_category_id)
+            .eq('sec_sub_cate_id',  jobIntent.sec_sub_category_id);
+            updateInventry(data[0]);          
+        }else if(jobIntent.sec_sub_category_id == null && jobIntent.sub_category_id != null){
+            const { data } = await supabase.from("inventry").select()
+            .eq('cate_id',  jobIntent.category_id)
+            .eq('sub_cate_id',  jobIntent.sub_category_id);
+            updateInventry(data[0]); 
+        }else if(jobIntent.sec_sub_category_id == null && jobIntent.sub_category_id == null){
+            const { data } = await supabase.from("inventry").select()
+            .eq('cate_id',  jobIntent.category_id);
+            updateInventry(data[0]); 
+        }
+        
+    }
+
+    async function updateInventry(data) {
+        console.log(data.id);
+       
+        console.log(data.current_value);
+        if(data.current_value > jobIntent.intent_value){
+            const updatec_value = parseFloat(data.current_value)- 
+                              parseFloat(jobIntent.intent_value);
+           
+            const { updatepvalue } = await supabase.from("inventry")
+              .update({'current_value': updatec_value })
+              .eq('id', data.id);
+        }
+       
+        
+    }
+
+
     // update category 
     const changeHandler = (e) => {
         getSubCategories(e.target.value);
@@ -95,12 +132,15 @@ export default function AddJobIntent() {
                     sub_cate_id: jobIntent.sub_category_id,
                     sec_sub_cate_id: jobIntent.sec_sub_category_id,
                 });
-            navigate({
-                pathname: "/viewjob",
-                search: createSearchParams({
-                    job_id: jobIntent.job_id
-                }).toString()
-            });
+                selectInventry();
+                
+                navigate({
+                    pathname: "/viewjob",
+                    search: createSearchParams({
+                        job_id: jobIntent.job_id
+                    }).toString()
+                });
+            
         }
     };
     const valueHandler = (e) => {

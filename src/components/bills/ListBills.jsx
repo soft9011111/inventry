@@ -5,21 +5,37 @@ import Table from 'react-bootstrap/Table';
 import { createClient } from "@supabase/supabase-js";
 import { createSearchParams, useNavigate } from "react-router-dom";
 import Config from "../../scripts/config";
+import Header from "../Header";
 
 const supabase = createClient(Config.SUPABASE_URL, Config.SUPABASE_KEY);
 
 function ListBills() {
   const navigate = useNavigate();
   const [Bills, setBills] = useState([]);
+  const [UserRole, setUserRole] = useState("");
+  const [UserName, setUserName] = useState("");
 
   useEffect(() => {
     getBills();
+    getSession();
   }, []);
 
   async function getBills() {
     const { data } = await supabase.from("bills").select();
     setBills(data);
   }
+
+  async function getSession(){
+    const isLoggedIn = sessionStorage.getItem('isLoggedIn');
+    const userrole = sessionStorage.getItem('userrole');
+    const username = sessionStorage.getItem('username');
+     if( isLoggedIn != null){
+        setUserRole(userrole);
+        setUserName(username);
+     }else{
+        navigate("/");
+     }
+}
 
   const viewbill = (bill) => {
     navigate({
@@ -31,8 +47,10 @@ function ListBills() {
   }
   return (
     <div className="listjobs">
+      <Header menu={true} username={UserName} />
       <Container>
-        <div className="addjobbtn"><Button style={{ background: 'gray', borderRadius: 50 }} variant="primary" href="/addbill" >Add Bill</Button>  &nbsp;&nbsp;
+        <div className="addjobbtn">
+          <Button style={{ background: 'gray', borderRadius: 50 }} variant="primary" href="/addbill" >Add Bill</Button>  &nbsp;&nbsp;
           <Button style={{ background: 'gray', borderRadius: 50 }} variant="primary" href="/searchbill" >Search Bill</Button>
         </div>
         <Table striped bordered hover>
@@ -41,7 +59,7 @@ function ListBills() {
               <th >Bill No</th>
               <th >Vendor Name</th>
               <th >Date</th>
-              <th></th>
+              <th>Created by</th>
             </tr>
           </thead>
           <tbody>
@@ -50,6 +68,7 @@ function ListBills() {
                 <td>{bill.bill_no}</td>
                 <td>{bill.vendor_name}</td>
                 <td>{bill.bill_date}</td>
+                <td>{UserName}</td>
               </tr>
             ))}
           </tbody>

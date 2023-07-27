@@ -34,7 +34,7 @@ export default function AddJob() {
     return (
         <div className="addjobform">
             <Container>
-                <h3 className="new">Add New Job</h3>
+                <h4 className="new">Add New Job</h4>
                 <form onSubmit={handleSubmit}>
                     <Row>Client Name</Row>
                     <Row ><input type="text" style={{ height: 40 }} name="client_name" height="20" placeholder=""

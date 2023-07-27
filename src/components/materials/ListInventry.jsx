@@ -5,15 +5,19 @@ import Table from 'react-bootstrap/Table';
 import { createClient } from "@supabase/supabase-js";
 import { createSearchParams, useNavigate } from "react-router-dom";
 import Config from "../../scripts/config";
+import Header from "../Header";
 
 const supabase = createClient(Config.SUPABASE_URL, Config.SUPABASE_KEY);
 
 function AddInventry() {
   const navigate = useNavigate();
   const [Inventry, setInventry] = useState([]);
+  const [UserRole, setUserRole] = useState(null);
+  const [UserName, setUserName] = useState(null);
 
   useEffect(() => {
     getInventry();
+    getSession();
   }, []);
 
   async function getInventry() {
@@ -21,10 +25,22 @@ function AddInventry() {
     setInventry(data);
   }
 
+  async function getSession(){
+    const isLoggedIn = sessionStorage.getItem('isLoggedIn');
+    const userrole = sessionStorage.getItem('userrole');
+    const username = sessionStorage.getItem('username');
+     if( isLoggedIn != null){
+        setUserRole(userrole);
+        setUserName(username);
+     }else{
+        navigate("/");
+     }
+}
+
   return (
     <div className="listjobs">
+      <Header menu={true} username={UserName} />
       <Container>
-        
         <Table striped bordered hover>
         <thead>
             <tr>

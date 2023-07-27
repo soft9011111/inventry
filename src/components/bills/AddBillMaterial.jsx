@@ -40,6 +40,44 @@ export default function AddBillMaterial() {
         const { data } = await supabase.from("inventry").select();
         setInventry(data);
     }
+
+    async function selectInventry() {
+        if(BillDetail.sec_sub_category_id != null && BillDetail.sub_category_id != null){
+            const { data } = await supabase.from("inventry").select()
+            .eq('cate_id',  BillDetail.category_id)
+            .eq('sub_cate_id',  BillDetail.sub_category_id)
+            .eq('sec_sub_cate_id',  BillDetail.sec_sub_category_id);
+            updateInventry(data[0]);          
+        }else if(BillDetail.sec_sub_category_id == null && BillDetail.sub_category_id != null){
+            const { data } = await supabase.from("inventry").select()
+            .eq('cate_id',  BillDetail.category_id)
+            .eq('sub_cate_id',  BillDetail.sub_category_id);
+            updateInventry(data[0]); 
+        }else if(BillDetail.sec_sub_category_id == null && BillDetail.sub_category_id == null){
+            const { data } = await supabase.from("inventry").select()
+            .eq('cate_id',  BillDetail.category_id);
+            updateInventry(data[0]); 
+        }
+        // const c_value = purchase_value + data[0].current_value;
+        // console.log(c_value);
+    }
+
+   async function updateInventry(data) {
+        
+    console.log(data.id);
+    console.log(data.price);
+    console.log(data.current_value);
+    const updatec_value = parseFloat(BillDetail.purchase_value) + 
+                          parseFloat(data.current_value);
+    console.log(updatec_value);
+    const { updatepvalue } = await supabase.from("inventry")
+     .update({'current_value': updatec_value })
+     .eq('id', data.id);
+     console.log(updatepvalue);
+    }
+    
+
+
     async function getBillMaterial() {
         const { data, error } = await supabase.from("bill_details")
             .select()
@@ -90,7 +128,6 @@ export default function AddBillMaterial() {
 
     async function handleSubmit(e) {
         e.preventDefault();
-        console.log(BillDetail)
         if (BillDetail.category_id != "-1" && BillDetail.sub_category_id != "-1"
             && BillDetail.sec_sub_category_id != "-1") {
             if (BillDetail.sub_category_id == 0) {
@@ -109,6 +146,9 @@ export default function AddBillMaterial() {
                     sub_cate_id: BillDetail.sub_category_id,
                     sec_sub_cate_id: BillDetail.sec_sub_category_id,
                 });
+
+                selectInventry();
+
             // navigate({
             //     pathname: "/addbillmaterial",
             //     search: createSearchParams({
@@ -147,7 +187,6 @@ export default function AddBillMaterial() {
         }
     }
     async function removeMaterial(row) {
-        console.log(row);
         const { data, error } = await supabase.from("bill_details")
             .delete()
             .eq('id', row.id);
