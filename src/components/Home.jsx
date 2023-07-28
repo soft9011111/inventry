@@ -27,7 +27,7 @@ const Home = (props) => {
     }
     return (
         <div>
-            <Header menu={true} />
+            <Header menu={true} username={UserName} />
             <Container>
                 <h3 className="text-center mt-3">Home</h3>
             </Container>
