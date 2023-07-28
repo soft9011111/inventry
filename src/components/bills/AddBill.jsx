@@ -52,22 +52,21 @@ export default function AddBill() {
         const { data, error } = await supabase.from("bills").insert(
             {
                 bill_no: Bill.bill_no, vendor_name: Bill.vendor_name,
-                job_id: Bill.job_id, bill_date: Bill.bill_date}).select();
-        console.log(data);
-        console.log(error);
+                job_id: Bill.job_id, bill_date: Bill.bill_date,
+                created_by:UserName }).select();
         navigate({
             pathname: "/addbillmaterial",
             search: createSearchParams({
                 bill_id: data[0].id
-           })
-        });
+            }).toString()
+          });
     };
 
     return (
         <div className="addjobform">
             <Header menu={true} username={UserName} />
             <Container>
-                <h3 className="new">Add New Bill</h3>
+                <h4 className="new">Add New Bill</h4>
                 <form onSubmit={handleSubmit}>
                     <Row>Bill No</Row>
                     <Row ><input type="text" style={{ height: 40 }} name="bill_no" height="20" placeholder=""
@@ -92,7 +91,7 @@ export default function AddBill() {
                     
                     <Row><Button className="submit" style={{ background: 'gray', borderRadius: 50, }} type="submit">Add Material </Button></Row>
                     <br />
-                    <Row><Button style={{ background: 'gray', borderRadius: 50 }} variant="primary" href="/listjobs" >Back</Button>
+                    <Row><Button style={{ background: 'gray', borderRadius: 50 }} variant="primary" href="/listbills" >Back</Button>
                     </Row>
                 </form>
             </Container>

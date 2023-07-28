@@ -6,6 +6,7 @@ import Table from 'react-bootstrap/Table';
 import { useNavigate, useSearchParams, createSearchParams } from "react-router-dom";
 import Config from "../../scripts/config";
 import ViewJobDetails from "./ViewJobDetail";
+import Header from "../Header";
 
 const supabase = createClient(Config.SUPABASE_URL, Config.SUPABASE_KEY);
 
@@ -22,14 +23,26 @@ export default function AddJobIntent() {
     const [categories, setCategories] = useState([]);
     const [subCategories, setSubCategories] = useState([]);
     const [secSubCategories, setSecSubCategories] = useState([]);
+    const [UserRole, setUserRole] = useState("");
+    const [UserName, setUserName] = useState("");
 
     useEffect(() => {
         jobIntent.job_id = searchParams.get("job_id");
         jobIntent.intent_value = 0.0;
         getCategories();
-
+        getSession();
     }, []);
-
+    async function getSession() {
+        const isLoggedIn = sessionStorage.getItem('isLoggedIn');
+        const userrole = sessionStorage.getItem('userrole');
+        const username = sessionStorage.getItem('username');
+        if (isLoggedIn != null) {
+            setUserRole(userrole);
+            setUserName(username);
+        } else {
+            navigate("/");
+        }
+    }
     async function getCategories() {
         const { data, error } = await supabase.from("category")
             .select()
@@ -37,39 +50,39 @@ export default function AddJobIntent() {
     }
 
     async function selectInventry() {
-        if(jobIntent.sec_sub_category_id != null && jobIntent.sub_category_id != null){
+        if (jobIntent.sec_sub_category_id != null && jobIntent.sub_category_id != null) {
             const { data } = await supabase.from("inventry").select()
-            .eq('cate_id',  jobIntent.category_id)
-            .eq('sub_cate_id',  jobIntent.sub_category_id)
-            .eq('sec_sub_cate_id',  jobIntent.sec_sub_category_id);
-            updateInventry(data[0]);          
-        }else if(jobIntent.sec_sub_category_id == null && jobIntent.sub_category_id != null){
+                .eq('cate_id', jobIntent.category_id)
+                .eq('sub_cate_id', jobIntent.sub_category_id)
+                .eq('sec_sub_cate_id', jobIntent.sec_sub_category_id);
+            updateInventry(data[0]);
+        } else if (jobIntent.sec_sub_category_id == null && jobIntent.sub_category_id != null) {
             const { data } = await supabase.from("inventry").select()
-            .eq('cate_id',  jobIntent.category_id)
-            .eq('sub_cate_id',  jobIntent.sub_category_id);
-            updateInventry(data[0]); 
-        }else if(jobIntent.sec_sub_category_id == null && jobIntent.sub_category_id == null){
+                .eq('cate_id', jobIntent.category_id)
+                .eq('sub_cate_id', jobIntent.sub_category_id);
+            updateInventry(data[0]);
+        } else if (jobIntent.sec_sub_category_id == null && jobIntent.sub_category_id == null) {
             const { data } = await supabase.from("inventry").select()
-            .eq('cate_id',  jobIntent.category_id);
-            updateInventry(data[0]); 
+                .eq('cate_id', jobIntent.category_id);
+            updateInventry(data[0]);
         }
-        
+
     }
 
     async function updateInventry(data) {
         console.log(data.id);
-       
+
         console.log(data.current_value);
-        if(data.current_value > jobIntent.intent_value){
-            const updatec_value = parseFloat(data.current_value)- 
-                              parseFloat(jobIntent.intent_value);
-           
+        if (data.current_value > jobIntent.intent_value) {
+            const updatec_value = parseFloat(data.current_value) -
+                parseFloat(jobIntent.intent_value);
+
             const { updatepvalue } = await supabase.from("inventry")
-              .update({'current_value': updatec_value })
-              .eq('id', data.id);
+                .update({ 'current_value': updatec_value })
+                .eq('id', data.id);
         }
-       
-        
+
+
     }
 
 
@@ -131,16 +144,17 @@ export default function AddJobIntent() {
                     cate_id: jobIntent.category_id,
                     sub_cate_id: jobIntent.sub_category_id,
                     sec_sub_cate_id: jobIntent.sec_sub_category_id,
+                    created_by: UserName,
                 });
-                selectInventry();
-                
-                navigate({
-                    pathname: "/viewjob",
-                    search: createSearchParams({
-                        job_id: jobIntent.job_id
-                    }).toString()
-                });
-            
+            selectInventry();
+
+            navigate({
+                pathname: "/viewjob",
+                search: createSearchParams({
+                    job_id: jobIntent.job_id
+                }).toString()
+            });
+
         }
     };
     const valueHandler = (e) => {
@@ -149,11 +163,12 @@ export default function AddJobIntent() {
 
     return (
         <div className="addjobform">
+            <Header menu={true} username={UserName} />
             <Container>
-            <h3 className="new">Add New Intent</h3>
+                <h4 className="new">Add Material Intent</h4>
                 <div>
                     <ViewJobDetails job_id={searchParams.get("job_id")} />
-                </div><br /><br /><br /><br />
+                </div>
                 <div>
                     <form onSubmit={handleSubmit}>
                         <Row>Catagory</Row>

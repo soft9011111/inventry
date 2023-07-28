@@ -14,10 +14,24 @@ function SearchBills() {
   const [Bills, setBills] = useState([]);
   const [startDate, setStartDate] =useState ('');
   const [endDate, setEndDate] = useState('');
-  useEffect(() => {
-    //getBills();
-  }, []);
+  const [UserRole, setUserRole] = useState("");
+  const [UserName, setUserName] = useState("");
 
+    useEffect(() => {
+        getSession();
+    }, []);
+
+    async function getSession() {
+        const isLoggedIn = sessionStorage.getItem('isLoggedIn');
+        const userrole = sessionStorage.getItem('userrole');
+        const username = sessionStorage.getItem('username');
+        if (isLoggedIn != null) {
+            setUserRole(userrole);
+            setUserName(username);
+        } else {
+            navigate("/");
+        }
+    }
   
   //search bills
   async function searchBillsSubmit(e) {
@@ -43,7 +57,7 @@ function SearchBills() {
     </thead>
     <tbody>
       {Bills.map((bill) => (
-        <tr key={bill.id} >
+        <tr key={bill.id} onClick={() => { viewbill(bill) }}>
           <td>{bill.bill_no}</td>
           <td>{bill.vendor_name}</td>
           <td>{bill.bill_date}</td>
@@ -65,9 +79,9 @@ function SearchBills() {
   }
   return (
     <div className="listjobs">
-       <Header menu={true} />
+       <Header menu={true} username={UserName} />
       <Container>
-        <h3 className="new">Search Bill</h3>
+        <h4 className="new">Search Bill</h4>
         <form onSubmit={searchBillsSubmit}>
           <Row>Bill No</Row>
           <Row ><input type="text" style={{ height: 40 }} 
@@ -100,7 +114,7 @@ function SearchBills() {
     </thead>
     <tbody>
       {Bills.map((bill) => (
-        <tr key={bill.id} >
+        <tr key={bill.id} onClick={() => { viewbill(bill) }}>
           <td>{bill.bill_no}</td>
           <td>{bill.vendor_name}</td>
           <td>{bill.bill_date}</td>

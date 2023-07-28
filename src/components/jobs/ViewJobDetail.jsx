@@ -26,7 +26,7 @@ function ViewJobDetails(Probs) {
   }
 
   return (
-    <div className="listjobs">
+    <div >
       <Container>
       <div>
         <Table striped bordered hover>

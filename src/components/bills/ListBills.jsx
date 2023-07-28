@@ -25,17 +25,17 @@ function ListBills() {
     setBills(data);
   }
 
-  async function getSession(){
+  async function getSession() {
     const isLoggedIn = sessionStorage.getItem('isLoggedIn');
     const userrole = sessionStorage.getItem('userrole');
     const username = sessionStorage.getItem('username');
-     if( isLoggedIn != null){
-        setUserRole(userrole);
-        setUserName(username);
-     }else{
-        navigate("/");
-     }
-}
+    if (isLoggedIn != null) {
+      setUserRole(userrole);
+      setUserName(username);
+    } else {
+      navigate("/");
+    }
+  }
 
   const viewbill = (bill) => {
     navigate({
@@ -68,7 +68,7 @@ function ListBills() {
                 <td>{bill.bill_no}</td>
                 <td>{bill.vendor_name}</td>
                 <td>{bill.bill_date}</td>
-                <td>{UserName}</td>
+                <td>{bill.created_by}</td>
               </tr>
             ))}
           </tbody>

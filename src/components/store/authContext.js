@@ -11,7 +11,7 @@ export function UserAuthContextProvider({ children }) {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   
   async function logIn(username,password)  {
-    const { data } = await supabase.from("login").select()
+    const { data } = await supabase.from("users").select()
     .eq('username', username)
     .eq('password',  password);
     

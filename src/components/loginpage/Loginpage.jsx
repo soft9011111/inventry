@@ -2,7 +2,7 @@ import React, {useState,useContext} from "react";
 import { Container,Row } from "react-bootstrap";
 import classes from './loginpage.module.css';
 import { useNavigate } from "react-router-dom";
-import {useUserAuth} from "../store/authContext";
+//import { useAuth } from "../../contexts/AuthContext";
 import Header from "../Header";
 import { createClient } from "@supabase/supabase-js";
 import Config from "../../scripts/config";
@@ -11,22 +11,23 @@ const supabase = createClient(Config.SUPABASE_URL, Config.SUPABASE_KEY);
 
 const Loginpage = (props) => {
     const navigate = useNavigate();
-    //const { logIn } = useUserAuth();
-
-
+    //const {authUser, setAuthUser, isLoggedIn, setIsLoggedIn} = useAuth();
     const [errorMessage, setErrorMessage] = React.useState("");
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
     
     async function handleSubmit (e) {
         e.preventDefault();       
-        const { data } = await supabase.from("login").select()
+        const { data } = await supabase.from("users").select()
         .eq('username', username)
-        .eq('password',  password);
+        .eq('password',  password)
+        .eq('is_active',  true);
+        console.log(data);
        if (data != null && data.length > 0 ){
-            sessionStorage.setItem('isLoggedIn', "1");
-            sessionStorage.setItem('userrole', data[0].role);
-            sessionStorage.setItem('username', data[0].username);
+            sessionStorage.setItem(Config.IS_LOGGED_IN, "true");
+            sessionStorage.setItem(Config.SESSION_USER_ID, data[0].id);
+            sessionStorage.setItem(Config.SESSION_USER_ROLE, data[0].role);
+            sessionStorage.setItem(Config.SESSION_USER_NAME, data[0].name);
             navigate('/home');
        }
        else{

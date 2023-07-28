@@ -1,10 +1,10 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Container, Row } from "react-bootstrap";
 import Button from 'react-bootstrap/Button';
-import { useState } from "react";
 import { createClient } from "@supabase/supabase-js";
 import { useNavigate } from "react-router-dom";
 import Config from "../../scripts/config";
+import Header from "../Header";
 
 const supabase = createClient(Config.SUPABASE_URL, Config.SUPABASE_KEY);
 
@@ -12,6 +12,24 @@ const supabase = createClient(Config.SUPABASE_URL, Config.SUPABASE_KEY);
 export default function AddJob() {
     const navigate = useNavigate();
 
+    const [UserRole, setUserRole] = useState("");
+    const [UserName, setUserName] = useState("");
+
+    useEffect(() => {
+        getSession();
+    }, []);
+
+    async function getSession() {
+        const isLoggedIn = sessionStorage.getItem('isLoggedIn');
+        const userrole = sessionStorage.getItem('userrole');
+        const username = sessionStorage.getItem('username');
+        if (isLoggedIn != null) {
+            setUserRole(userrole);
+            setUserName(username);
+        } else {
+            navigate("/");
+        }
+    }
     const [jobInfo, setJobInfo] = useState({
         client_name: "", veh_no: "", job_type: "New Job", target_date: "",
     });
@@ -33,6 +51,7 @@ export default function AddJob() {
 
     return (
         <div className="addjobform">
+            <Header menu={true} username={UserName} />
             <Container>
                 <h4 className="new">Add New Job</h4>
                 <form onSubmit={handleSubmit}>

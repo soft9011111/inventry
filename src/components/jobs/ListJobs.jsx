@@ -25,17 +25,17 @@ function ListJobs() {
     setJobs(data);
   }
 
-  async function getSession(){
+  async function getSession() {
     const isLoggedIn = sessionStorage.getItem('isLoggedIn');
     const userrole = sessionStorage.getItem('userrole');
     const username = sessionStorage.getItem('username');
-     if( isLoggedIn != null){
-        setUserRole(userrole);
-        setUserName(username);
-     }else{
-        navigate("/");
-     }
-}
+    if (isLoggedIn != null) {
+      setUserRole(userrole);
+      setUserName(username);
+    } else {
+      navigate("/");
+    }
+  }
 
   const viewjob = (job) => {
     navigate({

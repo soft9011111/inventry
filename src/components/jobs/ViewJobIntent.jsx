@@ -50,22 +50,25 @@ function getSecSubCategoryName(row){
 }
 
   return (
-    <div className="listjobs">
+    <div>
       <Container>
       <div>
         <Table striped bordered hover>
         <thead>
             <tr>
-              <th width="50%">Category</th>
-              <th width="40%">Sub Category</th>
-              <th width="40%">Sec Sub Category</th>
-              <th width="40%">Value</th>
-              <th></th>
+              <th >Category</th>
+              <th >Sub Category</th>
+              <th >Sec Sub Category</th>
+              <th >Value</th>
+              <th>Price</th>
+              <th>Added By</th>
             </tr>
           </thead>
           {JobIntent.map((Intent) => (
             <tbody>
-              <tr><td>{getCategoryName(Intent)} </td><td>{getSubCategoryName(Intent)} </td><td>{getSecSubCategoryName(Intent)} </td><td>{Intent.intent_value}</td></tr>
+              <tr><td>{getCategoryName(Intent)} </td><td>{getSubCategoryName(Intent)} </td>
+              <td>{getSecSubCategoryName(Intent)} </td><td>{Intent.intent_value}</td>
+              <td>{Intent.avg_price}</td><td>{Intent.created_by}</td></tr>
             </tbody>
           ))}
         </Table>

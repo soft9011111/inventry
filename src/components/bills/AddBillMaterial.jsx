@@ -237,7 +237,7 @@ export default function AddBillMaterial() {
                         <br />
                         <Row><Button className="submit" style={{ background: 'gray', borderRadius: 50, }} type="submit">Add Material </Button></Row>
                         <br />
-                        <Row><Button style={{ background: 'gray', borderRadius: 50 }} variant="primary" href="/listjobs" >Back</Button>
+                        <Row><Button style={{ background: 'gray', borderRadius: 50 }} variant="primary" href="/listbills" >Back</Button>
                         </Row>
                     </form>
                 </div>

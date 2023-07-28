@@ -24,7 +24,7 @@ export function AuthContextProvider({ children }) {
     };
 
     async function loginHandler  (username,password)  {
-        const { data } = await supabase.from("login").select()
+        const { data } = await supabase.from("users").select()
         .eq('username', username)
         .eq('password',  password);
         
