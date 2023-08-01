@@ -48,6 +48,8 @@ function AddInventry() {
               <th >Sub Category Name</th>
               <th >Sec Sub Category Name</th>
               <th >Current Value</th>
+              <th >Avg Price</th>
+              <th >Total Price</th>
               <th >Unit</th>
             </tr>
           </thead>
@@ -58,6 +60,8 @@ function AddInventry() {
                 <td>{material.sub_cate_name}</td>
                 <td>{material.sec_sub_cate_name}</td>
                 <td>{material.current_value}</td>
+                <td>{material.avg_price}</td>
+                <td>{parseFloat(material.avg_price) * parseFloat(material.current_value)}</td>
                 <td>{material.unit}</td>
               </tr>
             ))}

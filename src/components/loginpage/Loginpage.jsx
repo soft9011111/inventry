@@ -39,7 +39,6 @@ const Loginpage = (props) => {
         <div className="addjobform">
              <Header menu={false} />
             <Container>
-            
                 <form  onSubmit={(e)=>handleSubmit(e)}>
                     <h4>Login Here</h4>
                     <Row>

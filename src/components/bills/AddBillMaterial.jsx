@@ -7,6 +7,7 @@ import Config from "../../scripts/config";
 import ViewBillDetail from "./ViewBillDetail";
 import Table from 'react-bootstrap/Table';
 import del_image from "../../asset/clear.jpg"
+import Header from "../Header";
 
 const supabase = createClient(Config.SUPABASE_URL, Config.SUPABASE_KEY);
 
@@ -16,6 +17,8 @@ export default function AddBillMaterial() {
     const [searchParams] = useSearchParams();
     const [categories, setCategories] = useState([]);
     const [subCategories, setSubCategories] = useState([]);
+    const [UserRole, setUserRole] = useState("");
+    const [UserName, setUserName] = useState("");
     const [secSubCategories, setSecSubCategories] = useState([]);
     const [BillDetail, setBillDetail] = useState({
         bill_id: "", purchase_value: "0", purchase_price: "0", material_ref_id: "",
@@ -29,7 +32,20 @@ export default function AddBillMaterial() {
         getCategories();
         getInventry();
         getBillMaterial();
+        getSession();
     }, []);
+
+    async function getSession(){
+        const isLoggedIn = sessionStorage.getItem('isLoggedIn');
+        const userrole = sessionStorage.getItem('userrole');
+        const username = sessionStorage.getItem('username');
+         if( isLoggedIn != null){
+            setUserRole(userrole);
+            setUserName(username);
+         }else{
+            navigate("/");
+         }
+    }
 
     async function getCategories() {
         const { data, error } = await supabase.from("category")
@@ -41,41 +57,58 @@ export default function AddBillMaterial() {
         setInventry(data);
     }
 
-    async function selectInventry() {
-        if(BillDetail.sec_sub_category_id != null && BillDetail.sub_category_id != null){
-            const { data } = await supabase.from("inventry").select()
-            .eq('cate_id',  BillDetail.category_id)
-            .eq('sub_cate_id',  BillDetail.sub_category_id)
-            .eq('sec_sub_cate_id',  BillDetail.sec_sub_category_id);
-            updateInventry(data[0]);          
-        }else if(BillDetail.sec_sub_category_id == null && BillDetail.sub_category_id != null){
-            const { data } = await supabase.from("inventry").select()
-            .eq('cate_id',  BillDetail.category_id)
-            .eq('sub_cate_id',  BillDetail.sub_category_id);
-            updateInventry(data[0]); 
-        }else if(BillDetail.sec_sub_category_id == null && BillDetail.sub_category_id == null){
-            const { data } = await supabase.from("inventry").select()
-            .eq('cate_id',  BillDetail.category_id);
-            updateInventry(data[0]); 
-        }
-        // const c_value = purchase_value + data[0].current_value;
-        // console.log(c_value);
+    async function updateInventry() {
+
+        await getBillMaterial();
+        BillMaterial.map((Material) => {
+            selectInventry(Material);
+        })
+
+        // navigate({
+        //     pathname: "/viewbill",
+        //     search: createSearchParams({
+        //       bill_id: BillDetail.bill_id
+        //     }).toString()
+        //   });
     }
 
-   async function updateInventry(data) {
-        
-    console.log(data.id);
-    console.log(data.price);
-    console.log(data.current_value);
-    const updatec_value = parseFloat(BillDetail.purchase_value) + 
-                          parseFloat(data.current_value);
-    console.log(updatec_value);
-    const { updatepvalue } = await supabase.from("inventry")
-     .update({'current_value': updatec_value })
-     .eq('id', data.id);
-     console.log(updatepvalue);
+    async function selectInventry(Material) {
+        console.log(Material);
+        if (Material.sec_sub_cate_id != null && Material.sub_cate_id != null) {
+            const { data } = await supabase.from("inventry").select()
+                .eq('cate_id', Material.cate_id)
+                .eq('sub_cate_id', Material.sub_cate_id)
+                .eq('sec_sub_cate_id', Material.sec_sub_cate_id);
+            updateInventryData(data[0], Material);
+        } else if (Material.sec_sub_cate_id == null && Material.sub_cate_id != null) {
+            const { data } = await supabase.from("inventry").select()
+                .eq('cate_id', Material.cate_id)
+                .eq('sub_cate_id', Material.sub_cate_id);
+            updateInventryData(data[0], Material);
+        } else if (Material.sec_sub_cate_id == null && Material.sub_cate_id == null) {
+            const { data } = await supabase.from("inventry").select()
+                .eq('cate_id', Material.cate_id);
+            updateInventryData(data[0], Material);
+        }
     }
-    
+
+    async function updateInventryData(inventry, bill_mat) {
+        console.log(bill_mat);
+        console.log(inventry);
+        const update_unit = parseFloat(bill_mat.purchase_unit) +
+            parseFloat(inventry.current_value);
+        const update_price = parseFloat(bill_mat.purchase_price) +
+            (parseFloat(inventry.avg_price) * parseFloat(inventry.current_value));
+        const avg_price = update_price / update_unit;
+        console.log(update_unit);
+        console.log(update_price);
+        console.log(avg_price);
+        
+        const { updatepvalue } = await supabase.from("inventry")
+            .update({ 'current_value': update_unit,  'avg_price': avg_price })
+            .eq('id', inventry.id);
+    }
+
 
 
     async function getBillMaterial() {
@@ -83,6 +116,7 @@ export default function AddBillMaterial() {
             .select()
             .eq('bill_id', searchParams.get("bill_id"));
         setBillMaterial(data)
+        console.log(data);
     }
 
     // update our state with the value 
@@ -147,7 +181,7 @@ export default function AddBillMaterial() {
                     sec_sub_cate_id: BillDetail.sec_sub_category_id,
                 });
 
-                selectInventry();
+            // selectInventry();
 
             // navigate({
             //     pathname: "/addbillmaterial",
@@ -194,6 +228,7 @@ export default function AddBillMaterial() {
     }
     return (
         <div className="addjobform">
+            <Header menu={true} username={UserName} />
             <Container>
                 <div>
                     <ViewBillDetail bill_id={searchParams.get("bill_id")} />
@@ -237,7 +272,7 @@ export default function AddBillMaterial() {
                         <br />
                         <Row><Button className="submit" style={{ background: 'gray', borderRadius: 50, }} type="submit">Add Material </Button></Row>
                         <br />
-                        <Row><Button style={{ background: 'gray', borderRadius: 50 }} variant="primary" href="/listbills" >Back</Button>
+                        <Row><Button style={{ background: 'gray', borderRadius: 50 }} variant="primary" onClick={() => { updateInventry() }} >Done</Button>
                         </Row>
                     </form>
                 </div>
