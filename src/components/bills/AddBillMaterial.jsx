@@ -64,12 +64,12 @@ export default function AddBillMaterial() {
             selectInventry(Material);
         })
 
-        // navigate({
-        //     pathname: "/viewbill",
-        //     search: createSearchParams({
-        //       bill_id: BillDetail.bill_id
-        //     }).toString()
-        //   });
+        navigate({
+            pathname: "/viewbill",
+            search: createSearchParams({
+              bill_id: BillDetail.bill_id
+            }).toString()
+          });
     }
 
     async function selectInventry(Material) {
@@ -105,7 +105,7 @@ export default function AddBillMaterial() {
         console.log(avg_price);
         
         const { updatepvalue } = await supabase.from("inventry")
-            .update({ 'current_value': update_unit,  'avg_price': avg_price })
+            .update({ 'current_value': update_unit,  'avg_price': avg_price.toFixed(2) })
             .eq('id', inventry.id);
     }
 
@@ -175,7 +175,7 @@ export default function AddBillMaterial() {
                 {
                     bill_id: BillDetail.bill_id,
                     purchase_unit: BillDetail.purchase_value,
-                    purchase_price: BillDetail.purchase_price,
+                    purchase_price: parseFloat(BillDetail.purchase_price).toFixed(2),
                     cate_id: BillDetail.category_id,
                     sub_cate_id: BillDetail.sub_category_id,
                     sec_sub_cate_id: BillDetail.sec_sub_category_id,
