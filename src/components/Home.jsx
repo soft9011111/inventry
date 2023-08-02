@@ -17,7 +17,7 @@ const Home = (props) => {
         const isLoggedIn = sessionStorage.getItem(Config.IS_LOGGED_IN);
         const userrole = sessionStorage.getItem(Config.SESSION_USER_ROLE);
         const username = sessionStorage.getItem(Config.SESSION_USER_NAME);
-        if (isLoggedIn != null && userrole == Config.ADMIN_ROLE_ID) {
+        if (isLoggedIn != null ){
             setUserRole(userrole);
             setUserName(username);
         } else {

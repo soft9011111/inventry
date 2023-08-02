@@ -34,7 +34,7 @@ export default function UpdateUser() {
         const userrole = sessionStorage.getItem('userrole');
         const username = sessionStorage.getItem('username');
         
-        if (isLoggedIn != null && UserRole == Config.ADMIN_ROLE_ID) {
+        if (isLoggedIn != null) {
             setUserRole(userrole);
             setUserName(username);
         } else {
