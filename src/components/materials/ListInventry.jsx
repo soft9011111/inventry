@@ -61,7 +61,7 @@ function AddInventry() {
                 <td>{material.sec_sub_cate_name}</td>
                 <td>{material.current_value}</td>
                 <td>{material.avg_price}</td>
-                <td>{parseFloat(material.avg_price) * parseFloat(material.current_value)}</td>
+                <td>{(parseFloat(material.avg_price) * parseFloat(material.current_value)).toFixed(2)}</td>
                 <td>{material.unit}</td>
               </tr>
             ))}
